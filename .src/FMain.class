@@ -70,7 +70,7 @@ Public Sub start_ffmpeg()
                c &= ",scale=" & dW & ":" & dH & ":flags=bilinear" 
                If extrafilter_mid <> "" Then c &= "," & extrafilter_mid & ","
                c &= ",fps=" & fps_out_round 
-               c &= ",tmix=" & smooth1
+               If smooth1 > 0 Then c &= ",tmix=" & smooth1
                If smooth2 > 0 Then c &= ",tmix=" & smooth2
                If extrafilter_post <> "" Then c &= "," & extrafilter_post
   c &= " -pix_fmt rgb24" 
