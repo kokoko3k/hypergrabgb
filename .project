@@ -1,7 +1,7 @@
 # Gambas Project File 3.0
 Title=hypergrabgb
 Startup=StartClass
-Version=0.0.7
+Version=0.0.9
 Component=gb.args
 Component=gb.image
 Component=gb.gui

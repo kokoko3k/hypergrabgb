@@ -43,10 +43,10 @@ Static Public Sub GetParameters()
      If arg_dh <> "" Then FMain.dh = arg_dh
     
      arg_fps_in = Args.Get("f", "grab-framerate", ("Grab framerate"), "integer")
-     If arg_fps_in <> "" Then FMain.fps_in = FMain.fps_in
+     If arg_fps_in <> "" Then FMain.fps_in = arg_fps_in
      
      arg_fps_out = Args.Get("r", "render-framerate", ("render framerate"), "integer")
-     If arg_fps_out <> "" Then FMain.fps_out = FMain.fps_out
+     If arg_fps_out <> "" Then FMain.fps_out = arg_fps_out
 
      arg_smooth1 = Args.Get("s", "smoothing1", ("Smoothing time"), "integer: 0->128")
      If arg_smooth1 <> "" Then FMain.smooth1 = arg_smooth1
@@ -55,13 +55,13 @@ Static Public Sub GetParameters()
      If arg_smooth2 <> "" Then FMain.smooth2 = arg_smooth2
   
      arg_extrafilter_pre = Args.Get("p", "vf-pre", ("apply video filter at the begin of the chain"), "ffmpeg filter string")
-     If arg_extrafilter_pre <> "" Then FMain.extrafilter_pre = FMain.extrafilter_pre
+     If arg_extrafilter_pre <> "" Then FMain.extrafilter_pre = arg_extrafilter_pre
      
      arg_extrafilter_mid = Args.Get("m", "vf-mid", ("apply video filter in the middle of the chain"), "ffmpeg filter string")
-     If arg_extrafilter_mid <> "" Then FMain.extrafilter_mid = FMain.extrafilter_mid
+     If arg_extrafilter_mid <> "" Then FMain.extrafilter_mid = arg_extrafilter_mid
      
      arg_extrafilter_post = Args.Get("l", "vf-post", ("apply video filter at the end of the chain"), "ffmpeg filter string")
-     If arg_extrafilter_post <> "" Then FMain.extrafilter_post = FMain.extrafilter_post
+     If arg_extrafilter_post <> "" Then FMain.extrafilter_post = arg_extrafilter_post
   
      FMain.bDebug = Args.Has("v", "verbose", ("Enable debug output"))
   Args.End()
