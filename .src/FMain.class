@@ -1,0 +1,284 @@
+' Gambas class file
+
+Public Sub _new()
+
+End
+
+Public Sub Form_Open()
+
+End
+
+
+
+Public Sub keyfromcode(keycode As Integer) As String
+  Dim i As Integer
+  'it is different from key.text because when one presses ctrl+a,
+  'Key.text returns ^ A, While this function will Return "A"
+  'printable characters goes from 32 to 126 and from 128 to 254
+  For i = 32 To 126
+    If keycode = Key[Chr(i)] Then Return Lower(Chr(i))
+  Next
+  'for extended characters, thie wont work, we fallback to key.text, sorry.
+  For i = 128 To 254
+    If keycode = Key[Chr(i)] Then Return Key.text
+  Next
+
+  Return ""
+End
+
+Public Sub GetSpecialKey(keycode As Integer) As String
+  Select Case keycode
+    Case key.BackTab
+       Return "BackTab"
+    Case key.CapsLock
+       Return "CapsLock"
+    Case key.Down
+       Return "Down"
+    Case key.End
+       Return "End"
+    Case key.Enter
+       Return "Enter"
+    Case key.F1
+       Return "F1"
+    Case key.F10
+       Return "F10"
+    Case key.F11
+       Return "F11"
+    Case key.F12
+       Return "F12"
+    Case key.F13
+       Return "F13"
+    Case key.F14
+       Return "F14"
+    Case key.F15
+       Return "F15"
+    Case key.F16
+       Return "F16"
+    Case key.F17
+       Return "F17"
+    Case key.F18
+       Return "F18"
+    Case key.F19
+       Return "F19"
+    Case key.F2
+       Return "F2"
+    Case key.F20
+       Return "F20"
+    Case key.F21
+       Return "F21"
+    Case key.F22
+       Return "F22"
+    Case key.F23
+       Return "F23"
+    Case key.F24
+       Return "F24"
+    Case key.F3
+       Return "F3"
+    Case key.F4
+       Return "F4"
+    Case key.F5
+       Return "F5"
+    Case key.F6
+       Return "F6"
+    Case key.F7
+       Return "F7"
+    Case key.F8
+       Return "F8"
+    Case key.F9
+       Return "F9"
+    Case key.Help
+       Return "Help"
+    Case key.Home
+       Return "Home"
+    Case key.Ins
+       Return "Ins"
+    Case key.Insert
+       Return "Insert"
+    Case key.Left
+       Return "Left"
+    Case key.Menu
+       Return "Menu"
+    Case key.MetaKey
+       Return "MetaKey"
+    Case key.NumLock
+       Return "NumLock"
+    Case key.PageDown
+       Return "PageDown"
+    Case key.PageUp
+       Return "PageUp"
+    Case key.Pause
+       Return "Pause"
+    Case key.PgDown
+       Return "PgDown"
+    Case key.PgUp
+       Return "PgUp"
+    Case key.Print
+       Return "Print"
+    Case key.Return
+       Return "Return"
+    Case key.Right
+       Return "Right"
+    Case key.ScrollLock
+       Return "ScrollLock"
+    Case key.Space
+       Return "Space"
+    Case key.SysReq
+       Return "SysReq"
+    Case key.Tab
+       Return "Tab"
+    Case key.Up
+       Return "Up"
+    Case Else
+        Return ""
+  End Select
+End
+
+
+
+Public mods As New String[]
+Public keypressed As String = ""
+Public mousebutton As String = "0"
+Public mousewheel As String = "NONE"
+
+
+Public Sub StoreKey(source As String)
+  Dim KeyCode As Integer = -1
+  Dim specialkey As String = ""
+  Dim printablekey As String = ""
+  Dim mousedelta As Integer = 0
+
+  If source = "KEY" Then
+      'is it a key pressed?
+      Try KeyCode = Key.Code  
+
+      If Not Error Then
+        'yes, it was a key.
+        'Was it a modifier?
+        Select keycode
+          Case Key.ControlKey
+            mods.add("Ctrl")
+            Return
+          Case Key.AltKey
+            mods.Add("Alt")
+            Return
+          Case Key.ShiftKey
+            mods.Add("Shift")
+            Return
+        End Select
+        If Key.control Then 
+          mods.Add("Ctrl")
+    
+        Endif
+        If Key.alt Then 
+          mods.Add("Alt")
+    
+        Endif
+        If Key.shift Then 
+          mods.Add("Shift")
+    
+        Endif
+    
+        'Was it a special key?
+        Try specialkey = GetSpecialKey(Keycode)
+        If specialkey <> "" Then
+          keypressed = specialkey
+          Return
+        Endif
+    
+        'was it a printable key?
+        Try printablekey = keyfromcode(keycode)
+        If printablekey <> "" Then 
+            keypressed = printablekey
+            Return
+        Endif
+      Endif
+      Return
+  Endif 
+
+  If source = "MOUSEBUTTON" Then
+      'is it a mouse pressed?
+      mousebutton = 0
+      Try mousebutton = Mouse.button
+      If mousebutton <> 0 Then Return 
+  Endif
+
+  If source = "WHEEL" Then
+      Try mousedelta = Mouse.Delta
+      'is it mouse wheel?
+      If MouseDelta > 0 Then
+        mousewheel = "UP"
+      Endif
+      If MouseDelta < 0 Then
+        mousewheel = "DOWN"
+      Endif
+  Endif
+
+  If source = "WHEEL" Or source = "MOUSEBUTTON" Then
+    'get mouse modifiers
+    If Mouse.control Then mods.add("Ctrl")
+    If Mouse.alt Then mods.Add("Alt")
+    If Mouse.shift Then mods.Add("Shift")
+  Endif 
+End
+
+
+
+Public Sub GetKey() As String
+  Dim lmods As String
+  Dim out As String
+  
+  If (mousebutton = 0) And (keypressed = "") And (mousewheel = "NONE") Then Return ""
+  out = "Mouse=" & mousebutton
+  out &= " "
+  out &= "Wheel=" & mousewheel
+  out &= " "
+
+  If mods.Find("Ctrl") <> -1 Then lmods &= "Ctrl"
+  If mods.Find("Alt") <> -1 Then lmods &= "Alt"
+  If mods.Find("Shift") <> -1 Then lmods &= "Shift"
+
+  If lmods <> "" Then
+    out &= "Mod=" & lmods
+  Endif
+
+  out &= " "
+  out &= "Key=" & keypressed
+
+    
+  'clear all:
+
+    MouseButton = 0
+    mods.Resize(0)
+    keypressed = ""
+    mousewheel = "NONE"
+
+    Return out
+
+End
+
+
+
+
+Public Sub Form_MouseDown()
+  StoreKey("MOUSEBUTTON")
+End
+
+Public Sub Form_KeyPress()
+  StoreKey("KEY")
+End
+
+Public Sub Form_MouseUp()
+  Debug GetKey()
+End
+
+Public Sub Form_KeyRelease()
+  Debug GetKey()
+End
+
+Public Sub Form_MouseWheel()
+  StoreKey("WHEEL")
+  Debug GetKey()
+  Debug "cleared?"
+End
+
+
