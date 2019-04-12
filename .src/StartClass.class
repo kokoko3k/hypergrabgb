@@ -49,10 +49,10 @@ Static Public Sub GetParameters()
      If arg_fps_out <> "" Then FMain.fps_out = FMain.fps_out
 
      arg_smooth1 = Args.Get("s", "smoothing1", ("Smoothing time"), "integer: 0->128")
-     If arg_smooth1 <> "" Then FMain.smooth1 = FMain.smooth1
+     If arg_smooth1 <> "" Then FMain.smooth1 = arg_smooth1
      
      arg_smooth2 = Args.Get("t", "smoothing2", ("Smoothing time"), "integer: 0->128")
-     If arg_smooth2 <> "" Then FMain.smooth2 = FMain.smooth2
+     If arg_smooth2 <> "" Then FMain.smooth2 = arg_smooth2
   
      arg_extrafilter_pre = Args.Get("p", "vf-pre", ("apply video filter at the begin of the chain"), "ffmpeg filter string")
      If arg_extrafilter_pre <> "" Then FMain.extrafilter_pre = FMain.extrafilter_pre
