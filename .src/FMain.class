@@ -1,8 +1,9 @@
 ' Gambas class file
 
-' Gambas class file
-
 Public xDisplay As String = ":0.0"
+
+Public hhost As String = "127.0.0.1"
+Public hport As String = "19444"
 
 Public sW As Integer = 1920
 Public sH As Integer = 1080
@@ -118,17 +119,17 @@ End
 
 
 Public Sub connect() As Boolean
-  global.mydebug("connecting...")
+  Debug "connecting..."
   MySock = New Socket
-  MySock.Connect("localhost", 19444)
+  MySock.Connect(hhost, hport)
   Do While (MySock.Status <> Net.Connected) And (MySock.Status > 0)
     Wait 0.1
   Loop
   If MySock.Status <> Net.connected Then
-    global.mydebug("Error")
+    Debug "connection error"
     Return False
   End If
-  global.mydebug("Connected")
+  Debug "Connected"
   Return True
 End
 
