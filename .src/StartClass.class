@@ -28,7 +28,7 @@ Static Public Sub GetParameters()
 
   Args.begin("hypergrabgb:")
      arg_hip = Args.Get("i", "connect-to", ("Hyperion address to connect to"), "address or hostname")
-     If arg_hip <> "" Then FMain.hip = arg_hip
+     If arg_hip <> "" Then FMain.hhost = arg_hip
 
      arg_hport = Args.Get("o", "port", ("Hyperion port to connect to"), "port number")
      If arg_hport <> "" Then FMain.hip = arg_hport
