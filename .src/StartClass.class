@@ -1,0 +1,81 @@
+' Gambas class file
+
+Static Public signals As Integer[] = [Signal.sigabrt, Signal.SIGINT, Signal.SIGILL, Signal.SIGQUIT, Signal.SIGTERM, Signal.SIGTSTP, signal.sigsegv]
+
+Static Public Sub ProcessSignals(Doit As Boolean)
+  Dim sig As Integer
+  If doit
+    For Each sig In signals
+      'Debug sig
+      Signal[sig].Catch
+    Next
+      Else
+    For Each sig In signals
+      Signal[sig].reset
+    Next
+  Endif
+End
+
+Static Public Sub Application_Signal(Sig As Integer)
+  global.myDebug("Got Signal " & sig & " Quitting as clean as possible")
+  ProcessSignals(False)
+  FMain.stop_main()
+  Quit
+End
+
+Static Public Sub GetParameters()
+  Dim arg_sw, arg_sh, arg_xdisplay, arg_dw, arg_dh, arg_fps_in, arg_fps_out, arg_smooth1, arg_smooth2, arg_extrafilter_pre, arg_extrafilter_mid, arg_extrafilter_post As String
+
+  Args.begin("hypergrabgb:")
+     arg_xDisplay = Args.Get("x", "display", ("X display and offset"), "[hostname]:display_number.screen_number[+x_offset,y_offset]")
+     If arg_xDisplay <> "" Then FMain.xDisplay = arg_xDisplay
+
+     arg_sW = Args.Get("gw", "grab-width", ("Grab Width"), "pixels")
+     If arg_sw <> "" Then FMain.sW = arg_sw
+     
+     arg_sH = Args.Get("gh", "grab-height", ("Grab Height"), "pixels")
+     If arg_sh <> "" Then FMain.sh = arg_sh
+         
+     arg_dW = Args.Get("ow", "out-width", ("Output Width"), "pixels")
+     If arg_dw <> "" Then FMain.dw = arg_dw
+     
+     arg_dH = Args.Get("oh", "out-height", ("Output Height"), "pixels")
+     If arg_dh <> "" Then FMain.dh = arg_dh
+    
+     arg_fps_in = Args.Get("gf", "grab-framerate", ("Grab framerate"), "integer")
+     If arg_fps_in <> "" Then FMain.fps_in = FMain.fps_in
+     
+     arg_fps_out = Args.Get("gf", "render-framerate", ("render framerate"), "integer")
+     If arg_fps_out <> "" Then FMain.fps_out = FMain.fps_out
+
+     arg_smooth1 = Args.Get("s1", "smoothing1", ("Smoothing time"), "integer: 0->128")
+     If arg_smooth1 <> "" Then FMain.smooth1 = FMain.smooth1
+     
+     arg_smooth2 = Args.Get("s1", "smoothing2", ("Smoothing time"), "integer: 0->128")
+     If arg_smooth2 <> "" Then FMain.smooth2 = FMain.smooth2
+  
+     arg_extrafilter_pre = Args.Get("v1", "vf-pre", ("apply video filter at the begin of the chain"), "ffmpeg filter string")
+     If arg_extrafilter_pre <> "" Then FMain.extrafilter_pre = FMain.extrafilter_pre
+     
+     arg_extrafilter_mid = Args.Get("v2", "vf-mid", ("apply video filter in the middle of the chain"), "ffmpeg filter string")
+     If arg_extrafilter_mid <> "" Then FMain.extrafilter_mid = FMain.extrafilter_mid
+     
+     arg_extrafilter_post = Args.Get("v3", "vf-post", ("apply video filter at the end of the chain"), "ffmpeg filter string")
+     If arg_extrafilter_post <> "" Then FMain.extrafilter_post = FMain.extrafilter_post
+  
+     FMain.bDebug = Args.Has("v", "verbose", ("Enable debug output"))
+  Args.End()
+End
+
+
+
+
+
+
+Static Public Sub main()
+  ProcessSignals(True)
+  GetParameters()
+  FMain.start_main()
+
+End
+
