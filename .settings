@@ -4,14 +4,15 @@ Count=0
 [DebugWindow]
 Count=0
 
-[DebugWindow/mods]
-Geometry=[1280,0,224,280]
+[DebugWindow/i]
+Geometry=[1920,0,224,280]
 
 [OpenFile]
 File[1]=".src/FMain.form"
 Active=2
-File[2]=".src/FMain.class:0.12"
-Count=2
+File[2]=".src/FMain.class:4.55"
+File[3]="Image1.png"
+Count=3
 
 [Watches]
 Count=0

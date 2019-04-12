@@ -1,284 +1,154 @@
 ' Gambas class file
 
-Public Sub _new()
+' Gambas class file
 
-End
+Public xDisplay As String = ":0.0"
 
-Public Sub Form_Open()
+Public sW As Integer = 1920
+Public sH As Integer = 1080
 
-End
+Public dW As Integer = 16
+Public dH As Integer = 9
+
+Public fps_in As Integer = 10
+Public fps_out As Integer = 60
+
+Public smooth1 As Integer = 60
+Public smooth2 As Integer = 0
+
+Public extrafilter_pre As String = ""  '<-works on unmodified grabbed image
+Public extrafilter_post As String = "" '<-works on scaled grabbed image at grabbing framerate
+Public extrafilter_mid As String = ""  '<-works on scaled grabbed image at output framerate
+
+Public bDebug As Boolean = False
+
+Public imgsize As Integer = dW * dH * 3
+
+Public ffmpeg As Process
+
+Public buffer As String[]                               'since ffmpeg push frames in "group" at grab framerate, we store each group of frames 
+Public max_buffer As Integer = Floor(fps_out / fps_in)  'we need to store exactly fps_out / fps_in frames.
+
+Public MySock As Socket
+
+Public timer1 As Timer
 
 
 
-Public Sub keyfromcode(keycode As Integer) As String
-  Dim i As Integer
-  'it is different from key.text because when one presses ctrl+a,
-  'Key.text returns ^ A, While this function will Return "A"
-  'printable characters goes from 32 to 126 and from 128 to 254
-  For i = 32 To 126
-    If keycode = Key[Chr(i)] Then Return Lower(Chr(i))
-  Next
-  'for extended characters, thie wont work, we fallback to key.text, sorry.
-  For i = 128 To 254
-    If keycode = Key[Chr(i)] Then Return Key.text
-  Next
-
-  Return ""
-End
-
-Public Sub GetSpecialKey(keycode As Integer) As String
-  Select Case keycode
-    Case key.BackTab
-       Return "BackTab"
-    Case key.CapsLock
-       Return "CapsLock"
-    Case key.Down
-       Return "Down"
-    Case key.End
-       Return "End"
-    Case key.Enter
-       Return "Enter"
-    Case key.F1
-       Return "F1"
-    Case key.F10
-       Return "F10"
-    Case key.F11
-       Return "F11"
-    Case key.F12
-       Return "F12"
-    Case key.F13
-       Return "F13"
-    Case key.F14
-       Return "F14"
-    Case key.F15
-       Return "F15"
-    Case key.F16
-       Return "F16"
-    Case key.F17
-       Return "F17"
-    Case key.F18
-       Return "F18"
-    Case key.F19
-       Return "F19"
-    Case key.F2
-       Return "F2"
-    Case key.F20
-       Return "F20"
-    Case key.F21
-       Return "F21"
-    Case key.F22
-       Return "F22"
-    Case key.F23
-       Return "F23"
-    Case key.F24
-       Return "F24"
-    Case key.F3
-       Return "F3"
-    Case key.F4
-       Return "F4"
-    Case key.F5
-       Return "F5"
-    Case key.F6
-       Return "F6"
-    Case key.F7
-       Return "F7"
-    Case key.F8
-       Return "F8"
-    Case key.F9
-       Return "F9"
-    Case key.Help
-       Return "Help"
-    Case key.Home
-       Return "Home"
-    Case key.Ins
-       Return "Ins"
-    Case key.Insert
-       Return "Insert"
-    Case key.Left
-       Return "Left"
-    Case key.Menu
-       Return "Menu"
-    Case key.MetaKey
-       Return "MetaKey"
-    Case key.NumLock
-       Return "NumLock"
-    Case key.PageDown
-       Return "PageDown"
-    Case key.PageUp
-       Return "PageUp"
-    Case key.Pause
-       Return "Pause"
-    Case key.PgDown
-       Return "PgDown"
-    Case key.PgUp
-       Return "PgUp"
-    Case key.Print
-       Return "Print"
-    Case key.Return
-       Return "Return"
-    Case key.Right
-       Return "Right"
-    Case key.ScrollLock
-       Return "ScrollLock"
-    Case key.Space
-       Return "Space"
-    Case key.SysReq
-       Return "SysReq"
-    Case key.Tab
-       Return "Tab"
-    Case key.Up
-       Return "Up"
-    Case Else
-        Return ""
-  End Select
+Public Sub start_main()
+  If Not connect() Then Quit
+  buffer = New String[]
+  timer1 = New Timer As "Timer1"
+  start_ffmpeg()
+  Timer1.delay = Ceil(1000 / fps_out) 'we have 1/1000 precision, not more
+  Timer1.start
 End
 
 
-
-Public mods As New String[]
-Public keypressed As String = ""
-Public mousebutton As String = "0"
-Public mousewheel As String = "NONE"
-
-
-Public Sub StoreKey(source As String)
-  Dim KeyCode As Integer = -1
-  Dim specialkey As String = ""
-  Dim printablekey As String = ""
-  Dim mousedelta As Integer = 0
-
-  If source = "KEY" Then
-      'is it a key pressed?
-      Try KeyCode = Key.Code  
-
-      If Not Error Then
-        'yes, it was a key.
-        'Was it a modifier?
-        Select keycode
-          Case Key.ControlKey
-            mods.add("Ctrl")
-            Return
-          Case Key.AltKey
-            mods.Add("Alt")
-            Return
-          Case Key.ShiftKey
-            mods.Add("Shift")
-            Return
-        End Select
-        If Key.control Then 
-          mods.Add("Ctrl")
-    
-        Endif
-        If Key.alt Then 
-          mods.Add("Alt")
-    
-        Endif
-        If Key.shift Then 
-          mods.Add("Shift")
-    
-        Endif
-    
-        'Was it a special key?
-        Try specialkey = GetSpecialKey(Keycode)
-        If specialkey <> "" Then
-          keypressed = specialkey
-          Return
-        Endif
-    
-        'was it a printable key?
-        Try printablekey = keyfromcode(keycode)
-        If printablekey <> "" Then 
-            keypressed = printablekey
-            Return
-        Endif
-      Endif
-      Return
-  Endif 
-
-  If source = "MOUSEBUTTON" Then
-      'is it a mouse pressed?
-      mousebutton = 0
-      Try mousebutton = Mouse.button
-      If mousebutton <> 0 Then Return 
-  Endif
-
-  If source = "WHEEL" Then
-      Try mousedelta = Mouse.Delta
-      'is it mouse wheel?
-      If MouseDelta > 0 Then
-        mousewheel = "UP"
-      Endif
-      If MouseDelta < 0 Then
-        mousewheel = "DOWN"
-      Endif
-  Endif
-
-  If source = "WHEEL" Or source = "MOUSEBUTTON" Then
-    'get mouse modifiers
-    If Mouse.control Then mods.add("Ctrl")
-    If Mouse.alt Then mods.Add("Alt")
-    If Mouse.shift Then mods.Add("Shift")
-  Endif 
-End
-
-
-
-Public Sub GetKey() As String
-  Dim lmods As String
-  Dim out As String
+Public Sub start_ffmpeg()
+  Dim c As String
+  Dim fps_out_round As Float
+  Dim scale_fast_to_h, scale_fast_to_w As Integer
   
-  If (mousebutton = 0) And (keypressed = "") And (mousewheel = "NONE") Then Return ""
-  out = "Mouse=" & mousebutton
-  out &= " "
-  out &= "Wheel=" & mousewheel
-  out &= " "
+  scale_fast_to_h = sH Div 4 'use an intermediate scaling using nearest neighbor filter for performance reasons
+  scale_fast_to_W = sW Div 4 'use an intermediate scaling using nearest neighbor filter for performance reasons
+  
+  'since our timer can't assure fps, but only frametimes with a 1/1000 precision, we rely on the ability
+  'of ffmpeg to acheive float fps:
+  fps_out_round = 1000 / Ceil(1000 / 60) 
+  global.mydebug("Warning, rounding frametime, new fps=" & fps_out_round)
 
-  If mods.Find("Ctrl") <> -1 Then lmods &= "Ctrl"
-  If mods.Find("Alt") <> -1 Then lmods &= "Alt"
-  If mods.Find("Shift") <> -1 Then lmods &= "Shift"
+  c = " ffmpeg -loglevel quiet"
+  c &= " -f x11grab"
+  c &= " -framerate " & fps_in
+  c &= " -video_size 1920x1080"
+  c &= " -i " & xDisplay 
+  c &= " -vf " 
+               If extrafilter_pre <> "" Then c &= extrafilter_pre & ","
+               c &= "scale=" & scale_fast_to_h & ":" & scale_fast_to_W & ":flags=neighbor" 
+               c &= ",scale=" & dW & ":" & dH & ":flags=bilinear" 
+               If extrafilter_mid <> "" Then c &= "," & extrafilter_mid & ","
+               c &= ",fps=" & fps_out_round 
+               c &= ",tmix=" & smooth1
+               If smooth2 > 0 Then c &= ",tmix=" & smooth2
+               If extrafilter_post <> "" Then c &= "," & extrafilter_post
+  c &= " -pix_fmt rgb24" 
+  c &= " -vcodec rawvideo"
+  c &= " -f image2pipe -"
+  
+  global.mydebug("starting " & c)
+  
+  ffmpeg = Shell c For Read Write As "ffmpeg"
 
-  If lmods <> "" Then
-    out &= "Mod=" & lmods
+End
+
+'ottimizzazione: invece di ridimensionare l'array quando si riempie, simula la pila tramite un indice che indica l'ultimo dato arrivato
+Public Sub ffmpeg_read()
+  Dim sbuf As String
+  Try Read #ffmpeg, sBuf, - (imgsize)
+  If buffer.count >= max_buffer Then
+    global.mydebug("buffer overflow, dropping oldest frame, speedup timer")
+    Timer1.delay = Timer1.delay - 1 
+    global.mydebug(Timer1.delay)
+    buffer.delete(0)
   Endif
+  buffer.Push(sbuf)  
+  global.mydebug("queue size=", buffer.count)
+End
 
-  out &= " "
-  out &= "Key=" & keypressed
-
-    
-  'clear all:
-
-    MouseButton = 0
-    mods.Resize(0)
-    keypressed = ""
-    mousewheel = "NONE"
-
-    Return out
-
+Public Sub Timer1_Timer()
+  Dim data As String
+  If buffer.Count > 0 Then
+    data = buffer.Extract(0)[0]
+    send(dW, dH, data)
+    global.mydebug("sending data")
+      Else
+    global.mydebug("buffer underflow! Slowdown timer")
+    Timer1.delay = Timer1.delay + 1
+    global.mydebug(Timer1.delay)
+  Endif
 End
 
 
-
-
-Public Sub Form_MouseDown()
-  StoreKey("MOUSEBUTTON")
+Public Sub send(w As Integer, h As Integer, data As String)
+  data = Base64(data)
+  ssend(w, h, data)
 End
 
-Public Sub Form_KeyPress()
-  StoreKey("KEY")
+
+Public Sub connect() As Boolean
+  global.mydebug("connecting...")
+  MySock = New Socket
+  MySock.Connect("localhost", 19444)
+  Do While (MySock.Status <> Net.Connected) And (MySock.Status > 0)
+    Wait 0.1
+  Loop
+  If MySock.Status <> Net.connected Then
+    global.mydebug("Error")
+    Return False
+  End If
+  global.mydebug("Connected")
+  Return True
 End
 
-Public Sub Form_MouseUp()
-  Debug GetKey()
+Public Sub ssend(w As Integer, h As Integer, data As String)
+  Dim cmd As String
+  cmd = "{\"command\": \"image\",\"imagewidth\":"
+  cmd &= w
+  cmd &= ",\"imageheight\":"
+  cmd &= h
+  cmd &= ",\"imagedata\":\""
+  cmd &= data
+  cmd &= "\",\"priority\":100}"
+  cmd &= "\n"
+  Write #MySock, cmd, Len(cmd)
 End
 
-Public Sub Form_KeyRelease()
-  Debug GetKey()
+Public Sub stop_main()
+  mysock.Close
+  Try ffmpeg.kill
+  Quit
 End
 
-Public Sub Form_MouseWheel()
-  StoreKey("WHEEL")
-  Debug GetKey()
-  Debug "cleared?"
-End
 
 
