@@ -27,7 +27,7 @@ Public imgsize As Integer = dW * dH * 3
 Public ffmpeg As Process
 
 Public buffer As String[]                               'since ffmpeg push frames in "group" at grab framerate, we store each group of frames 
-Public max_buffer As Integer = Floor(fps_out / fps_in)  'we need to store exactly fps_out / fps_in frames.
+Public max_buffer As Integer '= Floor(fps_out / fps_in)  'we need to store exactly fps_out / fps_in frames.
 
 Public MySock As Socket
 
@@ -39,6 +39,7 @@ Public Sub start_main()
   If Not connect() Then Quit
   buffer = New String[]
   timer1 = New Timer As "Timer1"
+  max_buffer = Floor(fps_out / fps_in)
   start_ffmpeg()
   Timer1.delay = Ceil(1000 / fps_out) 'we have 1/1000 precision, not more
   Timer1.start

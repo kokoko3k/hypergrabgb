@@ -1,15 +1,15 @@
 # Gambas Project File 3.0
 Title=hypergrabgb
 Startup=StartClass
-Version=0.0.9
+Version=0.0.10
 Component=gb.args
 Component=gb.image
 Component=gb.gui
 Component=gb.form
 Component=gb.net
 Component=gb.signal
-Arguments=[["-h"],["-v"],["-x",":0.0"]]
-CurrentArgument=2
+Arguments=[["-h"],["-v"],["-x",":0.0"],["-f","60","-r","60"]]
+CurrentArgument=4
 TabSize=2
 Language=en_US
 ControlPublic=1
