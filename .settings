@@ -13,9 +13,10 @@ Path="hypergrabgb.gambas"
 [OpenFile]
 File[1]=".src/FMain.form"
 Active=2
-File[2]=".src/FMain.class:4.55"
-File[3]="Image1.png"
-Count=3
+File[2]=".src/FMain.class:72.70"
+File[3]=".src/Global.module:0.0"
+Count=4
+File[4]=".src/StartClass.class:0.27"
 
 [Watches]
 Count=0

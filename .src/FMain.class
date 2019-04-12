@@ -142,13 +142,21 @@ Public Sub ssend(w As Integer, h As Integer, data As String)
   cmd &= data
   cmd &= "\",\"priority\":100}"
   cmd &= "\n"
-  Write #MySock, cmd, Len(cmd)
+  Try Write #MySock, cmd, Len(cmd)
+  If Error Then 
+    stop_main(False) 'stop everything
+    Repeat 
+      Wait 1 'wait for hyperiond to return
+    Until connect()
+    mysock.close
+    start_main()
+  Endif
 End
 
-Public Sub stop_main()
+Public Sub stop_main(Optional myQuit As Boolean = True)
   mysock.Close
   Try ffmpeg.kill
-  Quit
+  If myQuit Then Quit
 End
 
 
