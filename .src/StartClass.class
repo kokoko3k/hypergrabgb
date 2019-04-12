@@ -45,7 +45,7 @@ Static Public Sub GetParameters()
      arg_fps_in = Args.Get("gf", "grab-framerate", ("Grab framerate"), "integer")
      If arg_fps_in <> "" Then FMain.fps_in = FMain.fps_in
      
-     arg_fps_out = Args.Get("gf", "render-framerate", ("render framerate"), "integer")
+     arg_fps_out = Args.Get("rf", "render-framerate", ("render framerate"), "integer")
      If arg_fps_out <> "" Then FMain.fps_out = FMain.fps_out
 
      arg_smooth1 = Args.Get("s1", "smoothing1", ("Smoothing time"), "integer: 0->128")

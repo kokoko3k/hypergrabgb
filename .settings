@@ -7,6 +7,9 @@ Count=0
 [DebugWindow/i]
 Geometry=[1920,0,224,280]
 
+[Executable]
+Path="hypergrabgb.gambas"
+
 [OpenFile]
 File[1]=".src/FMain.form"
 Active=2
