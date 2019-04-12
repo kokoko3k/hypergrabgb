@@ -33,7 +33,7 @@ Static Public Sub GetParameters()
      arg_sW = Args.Get("w", "grab-width", ("Grab Width"), "pixels")
      If arg_sw <> "" Then FMain.sW = arg_sw
      
-     arg_sH = Args.Get("h", "grab-height", ("Grab Height"), "pixels")
+     arg_sH = Args.Get("j", "grab-height", ("Grab Height"), "pixels")
      If arg_sh <> "" Then FMain.sh = arg_sh
          
      arg_dW = Args.Get("e", "out-width", ("Output Width"), "pixels")
