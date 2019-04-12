@@ -25,13 +25,12 @@ End
 
 Static Public Sub GetParameters()
   Dim arg_hip, arg_hport, arg_sw, arg_sh, arg_xdisplay, arg_dw, arg_dh, arg_fps_in, arg_fps_out, arg_smooth1, arg_smooth2, arg_extrafilter_pre, arg_extrafilter_mid, arg_extrafilter_post As String
-
   Args.begin("hypergrabgb:")
      arg_hip = Args.Get("i", "connect-to", ("Hyperion address to connect to"), "address or hostname")
      If arg_hip <> "" Then FMain.hhost = arg_hip
 
      arg_hport = Args.Get("o", "port", ("Hyperion port to connect to"), "port number")
-     If arg_hport <> "" Then FMain.hip = arg_hport
+     If arg_hport <> "" Then FMain.hhost = arg_hport
      
      arg_sW = Args.Get("w", "grab-width", ("Grab Width"), "pixels")
      If arg_sw <> "" Then FMain.sW = arg_sw

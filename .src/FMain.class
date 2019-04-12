@@ -121,14 +121,16 @@ End
 Public Sub connect() As Boolean
   Debug "connecting..."
   MySock = New Socket
-  MySock.Connect(hhost, hport)
-  Do While (MySock.Status <> Net.Connected) And (MySock.Status > 0)
-    Wait 0.1
-  Loop
-  If MySock.Status <> Net.connected Then
-    Debug "connection error"
-    Return False
-  End If
+  While MySock.Status <> Net.connected 
+    MySock.Connect(hhost, hport)
+    Do While (MySock.Status <> Net.Connected) And (MySock.Status > 0)
+      Wait 0.1
+    Loop
+    If MySock.Status <> Net.connected Then
+      Debug "connection error"
+      Wait 1
+    End If
+  Wend
   Debug "Connected"
   Return True
 End
@@ -146,9 +148,7 @@ Public Sub ssend(w As Integer, h As Integer, data As String)
   Try Write #MySock, cmd, Len(cmd)
   If Error Then 
     stop_main(False) 'stop everything
-    Repeat 
-      Wait 1 'wait for hyperiond to return
-    Until connect()
+    connect()
     mysock.close
     start_main()
   Endif
