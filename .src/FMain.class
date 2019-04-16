@@ -67,7 +67,7 @@ Public Sub start_ffmpeg()
   c &= " -i " & xDisplay 
   c &= " -vf " 
                If extrafilter_pre <> "" Then c &= extrafilter_pre & ","
-               c &= "scale=" & scale_fast_to_h & ":" & scale_fast_to_W & ":flags=neighbor" 
+               c &= "scale=" & scale_fast_to_w & ":" & scale_fast_to_h & ":flags=neighbor" 
                c &= ",scale=" & dW & ":" & dH & ":flags=bilinear" 
                If extrafilter_mid <> "" Then c &= "," & extrafilter_mid 
                c &= ",fps=" & fps_out_round 
