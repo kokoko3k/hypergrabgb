@@ -34,6 +34,7 @@ Public MySock As Socket
 
 Public timer1 As Timer
 
+Public sscript As String = ""
 
 
 Public Sub start_main()
@@ -59,25 +60,28 @@ Public Sub start_ffmpeg()
   'of ffmpeg to acheive float fps:
   fps_out_round = 1000 / Ceil(1000 / 60) 
   global.mydebug("Warning, rounding frametime, new fps=" & fps_out_round)
-
-  c = " ffmpeg -loglevel quiet"
-  c &= " -f x11grab"
-  c &= " -framerate " & fps_in
-  c &= " -video_size 1920x1080"
-  c &= " -i " & xDisplay 
-  c &= " -vf " 
-               If extrafilter_pre <> "" Then c &= extrafilter_pre & ","
-               c &= "scale=" & scale_fast_to_w & ":" & scale_fast_to_h & ":flags=neighbor" 
-               c &= ",scale=" & dW & ":" & dH & ":flags=bilinear" 
-               If extrafilter_mid <> "" Then c &= "," & extrafilter_mid 
-               c &= ",fps=" & fps_out_round 
-               If smooth1 > 0 Then c &= ",tmix=" & smooth1
-               If smooth2 > 0 Then c &= ",tmix=" & smooth2
-               If extrafilter_post <> "" Then c &= "," & extrafilter_post
-  c &= " -pix_fmt rgb24" 
-  c &= " -vcodec rawvideo"
-  c &= " -f image2pipe -"
-  
+  If sscript = "" Then 
+    c = " ffmpeg -loglevel quiet"
+    c &= " -f x11grab"
+    c &= " -framerate " & fps_in
+    c &= " -video_size 1920x1080"
+    c &= " -i " & xDisplay 
+    c &= " -vf " 
+                 If extrafilter_pre <> "" Then c &= extrafilter_pre & ","
+                 c &= "scale=" & scale_fast_to_w & ":" & scale_fast_to_h & ":flags=neighbor" 
+                 c &= ",scale=" & dW & ":" & dH & ":flags=bilinear" 
+                 If extrafilter_mid <> "" Then c &= "," & extrafilter_mid 
+                 c &= ",fps=" & fps_out_round 
+                 If smooth1 > 0 Then c &= ",tmix=" & smooth1
+                 If smooth2 > 0 Then c &= ",tmix=" & smooth2
+                 If extrafilter_post <> "" Then c &= "," & extrafilter_post
+    c &= " -pix_fmt rgb24" 
+    c &= " -vcodec rawvideo"
+    c &= " -f image2pipe -"
+      Else
+    c = sscript
+  Endif
+ 
   global.mydebug("starting " & c)
   
   ffmpeg = Shell c For Read Write As "ffmpeg"

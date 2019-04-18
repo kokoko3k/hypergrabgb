@@ -24,42 +24,42 @@ Static Public Sub Application_Signal(Sig As Integer)
 End
 
 Static Public Sub GetParameters()
-  Dim arg_hip, arg_hport, arg_sw, arg_sh, arg_xdisplay, arg_dw, arg_dh, arg_fps_in, arg_fps_out, arg_smooth1, arg_smooth2, arg_extrafilter_pre, arg_extrafilter_mid, arg_extrafilter_post As String
+  Dim arg_hip, arg_script, arg_hport, arg_sw, arg_sh, arg_xdisplay, arg_dw, arg_dh, arg_fps_in, arg_fps_out, arg_smooth1, arg_smooth2, arg_extrafilter_pre, arg_extrafilter_mid, arg_extrafilter_post As String
   Args.begin("hypergrabgb:")
-     arg_hip = Args.Get("i", "connect-to", ("Hyperion address to connect to"), "address or hostname")
+     arg_hip = Args.Get("i", "connect-to", ("Hyperion address to connect to (default 127.0.0.1)"), "address or hostname")
      If arg_hip <> "" Then FMain.hhost = arg_hip
 
-     arg_hport = Args.Get("o", "port", ("Hyperion port to connect to"), "port number")
+     arg_hport = Args.Get("o", "port", ("Hyperion port to connect to (default 19444)"), "port number")
      If arg_hport <> "" Then FMain.hhost = arg_hport
      
-     arg_sW = Args.Get("w", "grab-width", ("Grab Width"), "pixels")
+     arg_sW = Args.Get("w", "grab-width", ("Grab Width (default 127.0.0.1)"), "pixels")
      If arg_sw <> "" Then FMain.sW = arg_sw
 
      arg_xDisplay = Args.Get("x", "display", ("X display and offset"), "[hostname]:display_number.screen_number[+x_offset,y_offset]")
      If arg_xDisplay <> "" Then FMain.xDisplay = arg_xDisplay
 
-     arg_sW = Args.Get("w", "grab-width", ("Grab Width"), "pixels")
+     arg_sW = Args.Get("w", "grab-width", ("Grab Width (default 1920)"), "pixels")
      If arg_sw <> "" Then FMain.sW = arg_sw
      
-     arg_sH = Args.Get("j", "grab-height", ("Grab Height"), "pixels")
+     arg_sH = Args.Get("j", "grab-height", ("Grab Height (default 1080)"), "pixels")
      If arg_sh <> "" Then FMain.sh = arg_sh
          
-     arg_dW = Args.Get("e", "out-width", ("Output Width"), "pixels")
+     arg_dW = Args.Get("e", "out-width", ("Output Width (default 16)"), "pixels")
      If arg_dw <> "" Then FMain.dw = arg_dw
      
-     arg_dH = Args.Get("d", "out-height", ("Output Height"), "pixels")
+     arg_dH = Args.Get("d", "out-height", ("Output Height (default 9)"), "pixels")
      If arg_dh <> "" Then FMain.dh = arg_dh
     
-     arg_fps_in = Args.Get("f", "grab-framerate", ("Grab framerate"), "integer")
+     arg_fps_in = Args.Get("f", "grab-framerate", ("Grab framerate (default 10)"), "integer")
      If arg_fps_in <> "" Then FMain.fps_in = arg_fps_in
      
-     arg_fps_out = Args.Get("r", "render-framerate", ("render framerate"), "integer")
+     arg_fps_out = Args.Get("r", "render-framerate", ("render framerate (default 60)"), "integer")
      If arg_fps_out <> "" Then FMain.fps_out = arg_fps_out
 
-     arg_smooth1 = Args.Get("s", "smoothing1", ("Smoothing time"), "integer: 0->128")
+     arg_smooth1 = Args.Get("s", "smoothing1", ("Smoothing time (default 60)"), "integer: 0->128")
      If arg_smooth1 <> "" Then FMain.smooth1 = arg_smooth1
      
-     arg_smooth2 = Args.Get("t", "smoothing2", ("Smoothing time"), "integer: 0->128")
+     arg_smooth2 = Args.Get("t", "smoothing2", ("Smoothing time (default 0)"), "integer: 0->128")
      If arg_smooth2 <> "" Then FMain.smooth2 = arg_smooth2
   
      arg_extrafilter_pre = Args.Get("p", "vf-pre", ("apply video filter at the begin of the chain"), "ffmpeg filter string")
@@ -70,7 +70,10 @@ Static Public Sub GetParameters()
      
      arg_extrafilter_post = Args.Get("l", "vf-post", ("apply video filter at the end of the chain"), "ffmpeg filter string")
      If arg_extrafilter_post <> "" Then FMain.extrafilter_post = arg_extrafilter_post
-  
+
+     arg_script = Args.Get("z", "execute", ("execute the following script instead of ffmpeg, (needs -pix_fmt rgb24 -vcodec rawvideo -f image2pipe - "), "ffmpeg alternative script")
+     If arg_script <> "" Then FMain.sscript = arg_script
+
      FMain.bDebug = Args.Has("v", "verbose", ("Enable debug output"))
   Args.End()
 End
