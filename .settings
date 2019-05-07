@@ -11,7 +11,7 @@ Geometry=[48,0,224,280]
 Geometry=[1920,0,224,280]
 
 [Executable]
-Path="hypergrabgb.prova.gambas"
+Path="hypergrabgb.gambas"
 
 [OpenFile]
 File[1]=".src/FMain.form"

@@ -74,7 +74,7 @@ Public Sub start_ffmpeg()
     c = " ffmpeg -loglevel quiet"
     c &= " -f x11grab"
     c &= " -framerate " & fps_in
-    c &= " -video_size 1920x1080"
+    c &= " -video_size " & sw & "x" & sh
     c &= " -i " & xDisplay 
     c &= " -vf " 
                  If extrafilter_pre <> "" Then c &= extrafilter_pre & ","
