@@ -36,14 +36,24 @@ Public timer1 As Timer
 
 Public sscript As String = ""
 
+Public queue As Boolean = True
+
 
 Public Sub start_main()
   If Not connect() Then Quit
   buffer = New String[]
   timer1 = New Timer As "Timer1"
-  max_buffer = Floor(fps_out / fps_in)
+  If queue Then 
+    max_buffer = Floor(fps_out / fps_in)
+      Else
+    max_buffer = 0
+  Endif
   start_ffmpeg()
-  Timer1.delay = Ceil(1000 / fps_out) 'we have 1/1000 precision, not more
+  If queue Then 
+    Timer1.delay = Ceil(1000 / fps_out) 'we have 1/1000 precision, not more
+      Else
+    Timer1.delay = (1000 / fps_out) / 2
+  Endif
   Timer1.start
 End
 
@@ -93,9 +103,11 @@ Public Sub ffmpeg_read()
   Dim sbuf As String
   Try Read #ffmpeg, sBuf, - (imgsize)
   If buffer.count >= max_buffer Then
-    global.mydebug("buffer overflow, dropping oldest frame, speedup timer")
-    Timer1.delay = Timer1.delay - 1 
-    global.mydebug(Timer1.delay)
+    If queue Then 
+      global.mydebug("buffer overflow, dropping oldest frame, speedup timer")
+      Timer1.delay = Timer1.delay - 1 
+      global.mydebug(Timer1.delay)
+    Endif
     buffer.delete(0)
   Endif
   buffer.Push(sbuf)  
@@ -109,9 +121,11 @@ Public Sub Timer1_Timer()
     send(dW, dH, data)
     global.mydebug("sending data")
       Else
-    global.mydebug("buffer underflow! Slowdown timer")
-    Timer1.delay = Timer1.delay + 1
-    global.mydebug(Timer1.delay)
+    If queue Then 
+      global.mydebug("buffer underflow! Slowdown timer")
+      Timer1.delay = Timer1.delay + 1
+      global.mydebug(Timer1.delay)
+    Endif
   Endif
 End
 

@@ -71,6 +71,8 @@ Static Public Sub GetParameters()
      arg_extrafilter_post = Args.Get("l", "vf-post", ("apply video filter at the end of the chain"), "ffmpeg filter string")
      If arg_extrafilter_post <> "" Then FMain.extrafilter_post = arg_extrafilter_post
 
+     FMain.queue = Not (Args.Has("q", "no-queue", ("Output frames as soon as they are produced by ffmpeg")))
+     
      arg_script = Args.Get("z", "execute", ("execute the following script instead of ffmpeg, (needs -pix_fmt rgb24 -vcodec rawvideo -f image2pipe - "), "ffmpeg alternative script")
      If arg_script <> "" Then FMain.sscript = arg_script
 
