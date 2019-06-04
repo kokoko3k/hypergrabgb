@@ -1,0 +1,2 @@
+Uses ffmpeg to grab an x11 screen, scales it and send it to Hyperion to visualize it.
+Being based on ffmpeg is much more configurable than the default hyperion grabber.
