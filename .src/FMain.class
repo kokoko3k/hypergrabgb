@@ -101,7 +101,7 @@ End
 'ottimizzazione: invece di ridimensionare l'array quando si riempie, simula la pila tramite un indice che indica l'ultimo dato arrivato
 Public Sub ffmpeg_read()
   Dim sbuf As String
-  Try Read #ffmpeg, sBuf, - (imgsize)
+  Try Read #ffmpeg, sBuf, -(imgsize)
   If buffer.count >= max_buffer Then
     If queue Then 
       global.mydebug("buffer overflow, dropping oldest frame, speedup timer")
@@ -173,8 +173,18 @@ Public Sub ssend(w As Integer, h As Integer, data As String)
 End
 
 Public Sub stop_main(Optional myQuit As Boolean = True)
+  global.myDebug("closing...")
+  Dim timeout As Integer = 10
+  While ffmpeg.state = ffmpeg.running
+    Shell "kill " & ffmpeg.Handle Wait
+    Wait 1
+    timeout = timeout - 1
+    If timeout = 0 Then 
+      Shell "killall -9 " & ffmpeg.handle
+      Break
+    Endif
+  Wend
   mysock.Close
-  Try ffmpeg.kill
   If myQuit Then Quit
 End
 

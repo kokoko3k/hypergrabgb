@@ -7,6 +7,9 @@ Count=0
 [DebugWindow/Args]
 Geometry=[48,0,224,280]
 
+[DebugWindow/global]
+Geometry=[1920,0,224,280]
+
 [DebugWindow/i]
 Geometry=[1920,0,224,280]
 
@@ -15,11 +18,11 @@ Path="hypergrabgb.gambas"
 
 [OpenFile]
 File[1]=".src/FMain.form"
-Active=2
-File[2]=".src/FMain.class:0.121"
+Active=4
+File[2]=".src/FMain.class:7.170"
 File[3]=".src/Global.module:0.0"
 Count=4
-File[4]=".src/StartClass.class:40.32"
+File[4]=".src/StartClass.class:51.75"
 
 [Watches]
 Count=0
