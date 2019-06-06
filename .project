@@ -1,7 +1,7 @@
 # Gambas Project File 3.0
 Title=hypergrabgb
 Startup=StartClass
-Version=0.0.52
+Version=0.0.57
 Component=gb.args
 Component=gb.image
 Component=gb.gui
@@ -9,7 +9,7 @@ Component=gb.form
 Component=gb.net
 Component=gb.signal
 Arguments=[["-h"],["-v"],["-x",":0.0"],["-f","60","-r","60"],["-i","127.0.0.1","-o","194"],["-z","/tmp/ffprova.sh"],["-q"],["-z","/koko/tmp/hypervis/vis.sh"]]
-CurrentArgument=8
+CurrentArgument=2
 TabSize=2
 Language=en_US
 ControlPublic=1

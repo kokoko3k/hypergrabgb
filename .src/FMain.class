@@ -12,7 +12,7 @@ Public dW As Integer = 16
 Public dH As Integer = 9
 
 Public fps_in As Integer = 10
-Public fps_out As Integer = 60
+Public fps_out As Integer = 50
 
 Public smooth1 As Integer = 60
 Public smooth2 As Integer = 0
@@ -68,7 +68,7 @@ Public Sub start_ffmpeg()
   
   'since our timer can't assure fps, but only frametimes with a 1/1000 precision, we rely on the ability
   'of ffmpeg to acheive float fps:
-  fps_out_round = 1000 / Ceil(1000 / 60) 
+  fps_out_round = 1000 / Ceil(1000 / fps_out) 
   global.mydebug("Warning, rounding frametime, new fps=" & fps_out_round)
   If sscript = "" Then 
     c = " ffmpeg -loglevel quiet"
@@ -176,6 +176,7 @@ Public Sub stop_main(Optional myQuit As Boolean = True)
   global.myDebug("closing...")
   Dim timeout As Integer = 10
   While ffmpeg.state = ffmpeg.running
+    global.myDebug("Sending SIGTERM...")
     Shell "kill " & ffmpeg.Handle Wait
     Wait 1
     timeout = timeout - 1
