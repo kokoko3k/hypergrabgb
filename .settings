@@ -16,13 +16,16 @@ Geometry=[1920,0,224,280]
 [Executable]
 Path="hypergrabgb.gambas"
 
+[FCommit]
+LastCommit="do not override fps_out!"
+
 [OpenFile]
 File[1]=".src/FMain.form"
-Active=4
-File[2]=".src/FMain.class:7.170"
+Active=2
+File[2]=".src/FMain.class:2.67"
 File[3]=".src/Global.module:0.0"
 Count=4
-File[4]=".src/StartClass.class:51.75"
+File[4]=".src/StartClass.class:43.44"
 
 [Watches]
 Count=0
