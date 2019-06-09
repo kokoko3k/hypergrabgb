@@ -1,2 +1,28 @@
 Uses ffmpeg to grab an x11 screen, scales it and send it to Hyperion to visualize it.
 Being based on ffmpeg is much more configurable than the default hyperion grabber.
+
+ -i --connect-to <address or hostname>    Hyperion address to connect to (default 127.0.0.1)
+ -o --port <port number>                Hyperion port to connect to (default 19444)
+ -x --display <[hostname]:display_number.screen_number[+x_offset,y_offset]>    X display and offset
+ -w --grab-width <pixels>               Grab Width (default 1920)
+ -j --grab-height <pixels>              Grab Height (default 1080)
+ -e --out-width <pixels>                Output Width (default 16)
+ -d --out-height <pixels>               Output Height (default 9)
+ -f --grab-framerate <integer>          Grab framerate (default 10)
+ -r --render-framerate <integer>        render framerate (default 60)
+ -s --smoothing1 <integer: 0->128>      Smoothing time (default 60)
+ -t --smoothing2 <integer: 0->128>      Smoothing time (default 0)
+ -p --vf-pre <ffmpeg filter string>     apply video filter at the begin of the chain
+ -m --vf-mid <ffmpeg filter string>     apply video filter in the middle of the chain
+ -l --vf-post <ffmpeg filter string>    apply video filter at the end of the chain
+ -q --no-queue                          Output frames as soon as they are produced by ffmpeg
+ -z --execute <ffmpeg alternative script>    execute the following script instead of ffmpeg, (needs -pix_fmt rgb24 -vcodec rawvideo -f image2pipe - 
+ -v --verbose                           Enable debug output
+ -V --version                           Display version
+ -h --help                              Display this help
+
+when executing with -z:
+  * You still HAVE TO SPECIFY: -e,-d,-r
+  * You CAN still specify: -i,-o,-q,-v
+  other options are ignored.
+
